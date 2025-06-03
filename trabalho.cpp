@@ -197,13 +197,39 @@ struct Arvore{
         }
     }
 
-    /*
-    bool completa(){  // não sei o que fazer aqui
+    bool cheia(){
+        if (raiz == nullptr) return false;
+        else return cheiaRec(raiz);
     }
 
-    bool cheia(){  // não sei o que fazer aqu
+    bool completa() {
+        if (raiz == nullptr) return false;
+
+        queue<No*> fila;
+        fila.push(raiz);
+        bool encontrouIncompleto = false;
+
+        while (!fila.empty()) {
+            No* atual = fila.front();
+            fila.pop();
+
+            if (atual->esq) {
+                if (encontrouIncompleto) return false;
+                fila.push(atual->esq);
+            } else {
+                encontrouIncompleto = true;
+            }
+
+            if (atual->dir) {
+                if (encontrouIncompleto) return false;
+                fila.push(atual->dir);
+            } else {
+                encontrouIncompleto = true;
+            }
+        }
+
+        return true;
     }
-    */
 
     private:
         void destruir(No *nodo){
@@ -232,10 +258,21 @@ struct Arvore{
             posOrdemRec(nodo->dir);
             nodo->print();
         }
+
+        bool cheiaRec(No* no) {
+            if (no == nullptr) return true;
+
+            if ((no->esq == nullptr && no->dir != nullptr) ||
+                (no->esq != nullptr && no->dir == nullptr)) {
+                return false;
+            }
+
+            return cheiaRec(no->esq) && cheiaRec(no->dir);
+        }
 };
 
 // FUNCOES SECUNDARIAS
-void limpa_tela(){  // seq Ansi para limpar tela
+void limpa_tela(){ 
     #if defined(_WIN32) || defined(_WIN64)
         system("cls");
     #else
@@ -330,6 +367,10 @@ int main(){
                 cout << "Altura: " << arv->altura() << endl;
                 if (!arv->vazia()) cout << "Largura: " <<  endl;
                 arv->larguraPorNivel();
+                if (arv->cheia()) cout << "Árvore é cheia" << endl;
+                else cout << "Árvore não é cheia" << endl;
+                if (arv->completa()) cout << "Árvore é completa" << endl;
+                else cout << "Árvore não é completa" << endl;
             break;
             case 6:
                 continuar = false;
